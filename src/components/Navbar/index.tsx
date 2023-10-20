@@ -4,28 +4,30 @@ import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
 
 function NavBar() {
-  const [currentTheme, setTheme] = useState<"dark" | "light" | "system">("system")
+  const [currentTheme, setTheme] = useState<"dark" | "light" | "system">(
+    "system"
+  );
 
-  useEffect(()=>{
+  useEffect(() => {
     const documentClassList = document.documentElement.classList;
     if (currentTheme === "system") {
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      if (isDark) documentClassList.add("dark")
-      else documentClassList.remove("dark")
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (isDark) documentClassList.add("dark");
+      else documentClassList.remove("dark");
     }
-  },[currentTheme])
-  
+  }, [currentTheme]);
+
   const handleThemeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const documentClassList = document.documentElement.classList;
     const theme = e.currentTarget.value;
     if (theme === "dark") {
       documentClassList.add("dark");
-      setTheme("dark")
+      setTheme("dark");
     } else if (theme === "light") {
       documentClassList.remove("dark");
-      setTheme("light")
+      setTheme("light");
     } else if (theme === "system") {
-      setTheme("system")
+      setTheme("system");
     }
   };
 
@@ -36,9 +38,9 @@ function NavBar() {
       </Link>
 
       <div className="flex items-center gap-3">
-        <input className="p-2 rounded outline outline-accent" type="text" />
+        <input className="p-2 rounded outline outline-accent max-md:hidden" type="text" />
         <select
-          className="p-3 bg-secondary rounded font-semibold"
+          className="p-3 bg-secondary rounded font-semibold max-md:hidden"
           onChange={handleThemeChange}
         >
           <option value="system">Use system</option>
