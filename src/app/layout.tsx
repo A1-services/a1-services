@@ -2,12 +2,13 @@ import NavBar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Providers } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Candy Shop",
-  description: "Candy place my guy",
+  title: "Roman Scoops",
+  description: "The sweetest shop",
 };
 
 export default function RootLayout({
@@ -18,10 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar />
-        <main className="m-3 sm:mx-auto sm:w-[620px] md:w-[720px] lg:w-[1000px] xl:w-[1200px]">
-          {children}
-        </main>
+        <Providers>
+          <NavBar />
+          <main className="m-3 sm:mx-auto sm:w-[620px] md:w-[720px] lg:w-[1000px] xl:w-[1200px]">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

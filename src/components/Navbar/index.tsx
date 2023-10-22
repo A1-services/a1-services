@@ -2,53 +2,64 @@
 
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
+import Drawer from "react-modern-drawer";
+import { HiMenu, HiX } from "react-icons/hi";
+
+import 'react-modern-drawer/dist/index.css'
 
 function NavBar() {
-  const [currentTheme, setTheme] = useState<"dark" | "light" | "system">(
-    "system"
-  );
+  // const [currentTheme, setTheme] = useState<"dark" | "light">("light");
+  const [drawerOpen, setDrawer] = useState(false);
 
-  useEffect(() => {
-    const documentClassList = document.documentElement.classList;
-    if (currentTheme === "system") {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (isDark) documentClassList.add("dark");
-      else documentClassList.remove("dark");
-    }
-  }, [currentTheme]);
+  // useEffect(() => {
+  //   const documentClassList = document.documentElement.classList;
+  //   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  //   if (isDark) documentClassList.add("dark");
+  //   else documentClassList.remove("dark");
+  // }, []);
 
-  const handleThemeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const documentClassList = document.documentElement.classList;
-    const theme = e.currentTarget.value;
-    if (theme === "dark") {
-      documentClassList.add("dark");
-      setTheme("dark");
-    } else if (theme === "light") {
-      documentClassList.remove("dark");
-      setTheme("light");
-    } else if (theme === "system") {
-      setTheme("system");
-    }
-  };
+  // const handleThemeChange = () => {
+  //   const documentClassList = document.documentElement.classList;
+  //   setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+
+  //   if (currentTheme === "dark") {
+  //     documentClassList.add("dark");
+  //   } else if (currentTheme === "light") {
+  //     documentClassList.remove("dark");
+  //   }
+  // };
+
+  const closeDrawer = () => setDrawer(false);
+  const openDrawer = () => setDrawer(true);
 
   return (
-    <nav className="flex justify-between items-center p-3 mb-2 xl:w-[1200px] xl:mx-auto">
-      <Link href="/">
-        <h1 className="text-2xl text-primary font-bold">Candy Shop</h1>
-      </Link>
-
-      <div className="flex items-center gap-3">
-        <input className="p-2 rounded outline outline-accent max-md:hidden" type="text" />
-        <select
-          className="p-3 bg-secondary rounded font-semibold max-md:hidden"
-          onChange={handleThemeChange}
+    <>
+      <nav className="mb-2 flex items-center gap-4 p-3 md:justify-between xl:mx-auto xl:w-[1200px]">
+        <button
+          className="rounded p-2 outline outline-primary md:hidden"
+          onClick={openDrawer}
         >
-          <option value="system">Use system</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
-    </nav>
+          <HiMenu className="h-[18px] w-[18px] text-primary" />
+        </button>
+
+        <Link href="/">
+          <h1 className="text-2xl font-bold text-primary">Roman Scoops</h1>
+        </Link>
+
+        <div className="max-md:ml-auto max-md:w-1/3">
+          <input className="rounded p-2 outline outline-accent max-md:w-full" type="text" />
+        </div>
+      </nav>
+
+      <Drawer open={drawerOpen} onClose={closeDrawer} direction={"left"}>
+        <section className="p-4 flex flex-col">
+          <button className="my-3" onClick={closeDrawer}>
+            <HiX className="w-[24px] h-[24px] text-primary"/>
+          </button>
+          stuff
+        </section>
+      </Drawer>
+    </>
   );
 }
 
