@@ -1,54 +1,67 @@
 "use client";
 
 import Link from "next/link";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
+import { HiSearch } from "react-icons/hi";
+import {
+  Input,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@nextui-org/react";
 
 function NavBar() {
-  const [currentTheme, setTheme] = useState<"dark" | "light" | "system">(
-    "system"
-  );
-
-  useEffect(() => {
-    const documentClassList = document.documentElement.classList;
-    if (currentTheme === "system") {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (isDark) documentClassList.add("dark");
-      else documentClassList.remove("dark");
-    }
-  }, [currentTheme]);
-
-  const handleThemeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const documentClassList = document.documentElement.classList;
-    const theme = e.currentTarget.value;
-    if (theme === "dark") {
-      documentClassList.add("dark");
-      setTheme("dark");
-    } else if (theme === "light") {
-      documentClassList.remove("dark");
-      setTheme("light");
-    } else if (theme === "system") {
-      setTheme("system");
-    }
-  };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const items = [
+    { name: "Bake", url: "#" },
+    { name: "Ice cream", url: "#" },
+    { name: "Sweets", url: "#" },
+  ];
 
   return (
-    <nav className="flex justify-between items-center p-3 mb-2 xl:w-[1200px] xl:mx-auto">
-      <Link href="/">
-        <h1 className="text-2xl text-primary font-bold">Candy Shop</h1>
-      </Link>
+    <Navbar onMenuOpenChange={setIsMenuOpen}>
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="text-primary md:hidden"
+        />
+        <NavbarBrand>
+          <Link href="/">
+            <h1 className="text-2xl font-bold text-primary">Roman Scoops</h1>
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
 
-      <div className="flex items-center gap-3">
-        <input className="p-2 rounded outline outline-accent max-md:hidden" type="text" />
-        <select
-          className="p-3 bg-secondary rounded font-semibold max-md:hidden"
-          onChange={handleThemeChange}
-        >
-          <option value="system">Use system</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
-    </nav>
+      <NavbarContent className="max-md:hidden" justify="center">
+        {items.map((i, num) => (
+          <NavbarItem key={num}>
+            <Link className="font-semibold text-primary" href={i.url}>
+              {i.name}
+            </Link>
+          </NavbarItem>
+        ))}
+      </NavbarContent>
+
+      <NavbarContent justify="end">
+        <Input
+          className="max-w-[200px] rounded outline outline-accent"
+          startContent={<HiSearch className="h-[18px] w-[18px] text-accent" />}
+        />
+      </NavbarContent>
+      <NavbarMenu className="bg-background">
+        {items.map((i, num) => (
+          <NavbarMenuItem key={num}>
+            <Link className="font-semibold text-primary" href={i.url}>
+              {i.name}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+    </Navbar>
   );
 }
 
