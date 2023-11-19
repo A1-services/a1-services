@@ -1,6 +1,7 @@
 import ProductGrid from "@/components/Products/ProductGrid";
 import HomeCarousel from "./HomeCarousel";
 import CMS from "@/util/Content";
+import { headers } from "next/headers";
 
 export type Product = {
   title: string;
@@ -10,7 +11,8 @@ export type Product = {
 };
 
 async function getProducts() {
-  const domian = process.env.NEXT_URL
+  const env = process.env;
+  const domian = env.NEXT_PUBLIC_APP_URL || env.NEXT_URL || "";
   const bestResponse = await fetch(domian + "/api/best");
   const productResponse = await fetch(domian + "/api/product");
 
@@ -29,7 +31,7 @@ async function getProducts() {
 async function Home() {
   const { bestData, productData } = await getProducts();
   return (
-    <main className="w-full flex flex-col gap-3">
+    <main className="flex w-full flex-col gap-3">
       <HomeCarousel featuredItems={bestData.result} />
       <ProductGrid items={productData.result} />
     </main>
