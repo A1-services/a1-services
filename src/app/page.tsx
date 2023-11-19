@@ -1,22 +1,37 @@
-import Image1 from "assets/image1.jpg"
-import Image2 from "assets/image2.jpg"
-import Image3 from "assets/image3.jpg"
-import Image4 from "assets/image4.jpg"
-import Image5 from "assets/image5.jpg"
+import ProductGrid from "@/components/Products/ProductGrid";
 import HomeCarousel from "./HomeCarousel";
+import CMS from "@/util/Content";
 
-function Home() {
-  const items = [
-    { title: "Gregory", image: Image1.src, url: "/", price: 63 },
-    { title: "Max", image: Image2.src, url: "/", price: 16 },
-    { title: "Maria", image: Image3.src, url: "/", price: 100 },
-    { title: "Sophie", image: Image4.src, url: "/", price: 7 },
-    { title: "Mathilda", image: Image5.src, url: "/", price: 32 },
-  ]
+export type Product = {
+  title: string;
+  image: string;
+  id: string;
+  price: number;
+};
 
+async function getProducts() {
+  const domian = process.env.NEXT_URL
+  const bestResponse = await fetch(domian + "/api/best");
+  const productResponse = await fetch(domian + "/api/product");
+
+  const [bestInfo, productInfo] = await Promise.all([
+    bestResponse,
+    productResponse,
+  ]);
+  const [bestData, productData]: { result: Product[] }[] = await Promise.all([
+    bestInfo.json(),
+    productInfo.json(),
+  ]);
+
+  return { bestData, productData };
+}
+
+async function Home() {
+  const { bestData, productData } = await getProducts();
   return (
-    <main className="w-full ">
-      <HomeCarousel featuredItems={items} />
+    <main className="w-full flex flex-col gap-3">
+      <HomeCarousel featuredItems={bestData.result} />
+      <ProductGrid items={productData.result} />
     </main>
   );
 }

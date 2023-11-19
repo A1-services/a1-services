@@ -7,23 +7,20 @@ import {
   BsFillArrowLeftCircleFill as ArrowLeft,
 } from "react-icons/bs";
 import { Card, CardBody, CardFooter, Button } from "@nextui-org/react";
+import { Product } from "./page";
 
 interface Props {
-  featuredItems: {
-    title: string;
-    image: string;
-    url: string;
-    price: number;
-  }[];
+  featuredItems: Product[];
 }
 
 function HomeCarousel({ featuredItems }: Props) {
   const [currentIndex, setIndex] = useState(0);
+  const Items = featuredItems.slice(0, 5)
 
-  const { image, url, title, price } = featuredItems[currentIndex];
-  const lastIndex = featuredItems.length - 1;
+  const { image, id, title, price } = Items[currentIndex];
+  const lastIndex = Items.length - 1;
 
-  const showMapping = featuredItems.map((item, num) => (
+  const showMapping = Items.map((_item, num) => (
     <button
       className={`h-[16px] w-[16px] rounded-full ${
         currentIndex === num ? "bg-primary" : "bg-accent"
