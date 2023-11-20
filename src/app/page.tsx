@@ -12,7 +12,9 @@ export type Product = {
 
 async function getProducts() {
   const env = process.env;
-  const domian = env.NEXT_PUBLIC_APP_URL || env.NEXT_URL || "";
+  const domian = env.VERCEL_URL || env.NEXT_URL || "";
+  // const bestUrl = new CMS().bestProductsUrl()
+  // const productUrl = new CMS().productsUrl()
   const bestResponse = await fetch(domian + "/api/best");
   const productResponse = await fetch(domian + "/api/product");
 
