@@ -1,7 +1,7 @@
+"use client";
 import ProductGrid from "@/components/Products/ProductGrid";
 import HomeCarousel from "./HomeCarousel";
-import CMS from "@/util/Content";
-import { headers } from "next/headers";
+import { useEffect, useState } from "react";
 
 export type Product = {
   title: string;
@@ -11,8 +11,7 @@ export type Product = {
 };
 
 async function getProducts() {
-  const env = process.env;
-  const domian = "https://" + env.VERCEL_URL || env.NEXT_URL || "";
+  const domian = window.location.origin
   // const bestUrl = new CMS().bestProductsUrl()
   // const productUrl = new CMS().productsUrl()
   const bestResponse = await fetch(domian + "/api/best");
@@ -30,12 +29,30 @@ async function getProducts() {
   return { bestData, productData };
 }
 
-async function Home() {
-  const { bestData, productData } = await getProducts();
+function Home() {
+  const [isLoading, setLoading] = useState(true);
+  const [bestData, setBest] = useState<{ result: Product[] }>();
+  const [productData, setProduct] = useState<{ result: Product[] }>();
+
+  useEffect(() => {
+    const load = async () => {
+      const { bestData, productData } = await getProducts();
+      setBest(bestData);
+      setProduct(productData);
+      setLoading(false);
+    };
+    load()
+  }, []);
+
   return (
     <main className="flex w-full flex-col gap-3">
-      <HomeCarousel featuredItems={bestData.result} />
-      <ProductGrid items={productData.result} />
+      {isLoading && <>Loading ...</>}
+      {bestData! && productData! && (
+        <>
+          <HomeCarousel featuredItems={bestData.result} />
+          <ProductGrid items={productData.result} />
+        </>
+      )}
     </main>
   );
 }

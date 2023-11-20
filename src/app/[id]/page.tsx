@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchIdProduct, idProduct } from "@/types";
-import { Image } from "@nextui-org/react";
+import { Button, Image } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -31,12 +31,33 @@ function ProductPage() {
           {data === "notFound" && <>Not found</>}
           {data !== "notFound" && (
             <>
-              <Image
-                className="h-[400px] mx-auto"
-                src={data.images[indexImage]}
-                alt={data.title}
-              />
-              <h1 className="text-4xl text-accent underline">{data.title}</h1>
+              <h1 className="text-4xl text-accent">{data.title}</h1>
+              <div className="md:flex md:gap-3 md:flex-row-reverse">
+                <div className="mx-auto">
+                  <Image
+                    className="h-[400px] sm:h-[500px]"
+                    src={data.images[indexImage]}
+                    alt={data.title}
+                  />
+                </div>
+                <p className="text-text md:hidden">Images</p>
+                <div className="flex gap-3 md:flex-col">
+                  {data.images.map((i, num) => (
+                    <button
+                      className={`rounded-full p-3 font-bold text-white w-fit ${
+                        indexImage === num ? "bg-primary" : "bg-accent"
+                      }`}
+                      key={i}
+                      onClick={() => setIndex(num)}
+                    >
+                      {num + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <Button className="bg-accent text-xl font-bold text-white">
+                Buy R {data.price.toLocaleString()}
+              </Button>
             </>
           )}
         </>
