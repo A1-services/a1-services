@@ -22,7 +22,7 @@ function NavBar() {
 
   useEffect(()=>{
     const load = async () => {
-      const response = await fetch("/api/category")
+      const response = await fetch("/api/category", { cache: "no-store" })
       const data: {result: Category[]} = await response.json()
       setItems(data.result)
     }
