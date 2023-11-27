@@ -6,7 +6,7 @@ import {
   BsFillArrowRightCircleFill as ArrowRight,
   BsFillArrowLeftCircleFill as ArrowLeft,
 } from "react-icons/bs";
-import { Card, CardBody, CardFooter, Button } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Button, Link } from "@nextui-org/react";
 import { Product } from "./page";
 
 interface Props {
@@ -60,7 +60,7 @@ function HomeCarousel({ featuredItems }: Props) {
                 R {price.toLocaleString()}
               </h1>
             </div>
-            <Button className="w-full justify-self-end bg-accent font-semibold text-white md:text-xl">
+            <Button className="w-full justify-self-end bg-accent font-semibold text-white md:text-xl" href={`/${id}`} as={Link}>
               View
             </Button>
           </div>
@@ -73,7 +73,7 @@ function HomeCarousel({ featuredItems }: Props) {
 
         <div className="flex gap-3 max-[350px]:hidden">{showMapping}</div>
 
-        <Button onClick={handleNext} className="bg-accent">
+        <Button className="bg-accent" onClick={handleNext}>
           <ArrowRight className="text-white" />
         </Button>
       </CardFooter>

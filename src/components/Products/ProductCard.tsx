@@ -1,6 +1,6 @@
 "use client"
 import { Product } from "@/app/page";
-import { Button, Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Button, Card, CardBody, CardFooter, Image, Link } from "@nextui-org/react";
 
 type Props = {
   item: Product;
@@ -17,7 +17,7 @@ const ProductCard = ({ item: { id, title, price, image } }: Props) => {
           <p className="text-primary">{title}</p>
           <p className="text-accent">{price.toLocaleString()}</p>
         </div>
-        <Button className="bg-accent w-full text-white font-bold">Buy</Button>
+        <Button className="bg-accent w-full text-white font-bold" href={`/${id}`} as={Link}>Buy</Button>
       </CardFooter>
     </Card>
   );
