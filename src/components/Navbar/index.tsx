@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiSearch } from "react-icons/hi";
 import {
   Input,
@@ -14,16 +14,23 @@ import {
   NavbarMenuToggle,
 } from "@nextui-org/react";
 
+type Category = { name: string; id: string }
+
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const items = [
-    { name: "Bake", url: "#" },
-    { name: "Ice cream", url: "#" },
-    { name: "Sweets", url: "#" },
-  ];
+  const [items, setItems] = useState<Category[]>();
+
+  useEffect(()=>{
+    const load = async () => {
+      const response = await fetch("/api/category", { cache: "no-store" })
+      const data: {result: Category[]} = await response.json()
+      setItems(data.result)
+    }
+    load()
+  },[])
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
+    <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-background">
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -36,15 +43,20 @@ function NavBar() {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="max-md:hidden" justify="center">
-        {items.map((i, num) => (
-          <NavbarItem key={num}>
-            <Link className="font-semibold text-primary" href={i.url}>
-              {i.name}
-            </Link>
-          </NavbarItem>
-        ))}
-      </NavbarContent>
+      {items! && (
+        <NavbarContent className="max-md:hidden" justify="center">
+          {items.slice(0,3).map((i) => (
+            <NavbarItem key={i.id}>
+              <Link
+                className="font-semibold text-primary"
+                href={"/category/" + i.id}
+              >
+                {i.name}
+              </Link>
+            </NavbarItem>
+          ))}
+        </NavbarContent>
+      )}
 
       <NavbarContent justify="end">
         <Input
@@ -53,13 +65,17 @@ function NavBar() {
         />
       </NavbarContent>
       <NavbarMenu className="bg-background">
-        {items.map((i, num) => (
-          <NavbarMenuItem key={num}>
-            <Link className="font-semibold text-primary" href={i.url}>
-              {i.name}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        {items! &&
+          items.map((i) => (
+            <NavbarMenuItem key={i.id}>
+              <Link
+                className="font-semibold text-primary"
+                href={"/category/" + i.id}
+              >
+                {i.name}
+              </Link>
+            </NavbarMenuItem>
+          ))}
       </NavbarMenu>
     </Navbar>
   );
