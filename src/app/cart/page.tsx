@@ -8,8 +8,6 @@ function CartPage() {
     const {cart, removeItemCart} = useContext(cartContext)
     const {data: session, status} = useSession()
 
-    console.log(status)
-
     return <>
     <h1 className="text-3xl text-primary font-semibold">Cart</h1>
     <Divider />
@@ -30,7 +28,7 @@ function CartPage() {
     <div className="justify-start">
         <div className="flex gap-3 w-fit">
             <Button variant="light" color="danger">Cancel</Button>
-            <Button color="primary">Buy</Button>
+            <Button color="primary" disabled={status === "loading"}>Buy</Button>
         </div>
     </div>
     </>
