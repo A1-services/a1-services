@@ -3,13 +3,16 @@
 import { fetchIdProduct, idProduct } from "@/types";
 import { Button, Image } from "@nextui-org/react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { cartContext } from "@/context/cart";
+import { addToCart } from "@/util/Cart";
 
 function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<idProduct | "notFound">();
   const [isloading, setLoading] = useState(true);
   const [indexImage, setIndex] = useState(0);
+  const { addToCart } = useContext(cartContext);
 
   useEffect(() => {
     const origin = window.location.origin;
@@ -23,6 +26,18 @@ function ProductPage() {
     load();
   }, [id]);
 
+  const handleBuy = () => {
+    if (data! && data !== "notFound") {
+      const newProduct = {
+        id: data.id,
+        title: data.title,
+        image: data.images[0],
+        price: data.price,
+      };
+      addToCart(newProduct)
+    }
+  };
+
   return (
     <main className="flex flex-col gap-3">
       {isloading && <>Loading ...</>}
@@ -32,7 +47,7 @@ function ProductPage() {
           {data !== "notFound" && (
             <>
               <h1 className="text-4xl text-accent">{data.title}</h1>
-              <div className="md:flex md:gap-3 md:flex-row-reverse">
+              <div className="md:flex md:flex-row-reverse md:gap-3">
                 <div className="mx-auto">
                   <Image
                     className="h-[400px] sm:h-[500px]"
@@ -44,7 +59,7 @@ function ProductPage() {
                 <div className="flex gap-3 md:flex-col">
                   {data.images.map((i, num) => (
                     <button
-                      className={`rounded-full p-3 font-bold text-white w-fit ${
+                      className={`w-fit rounded-full p-3 font-bold text-white ${
                         indexImage === num ? "bg-primary" : "bg-accent"
                       }`}
                       key={i}
@@ -55,7 +70,10 @@ function ProductPage() {
                   ))}
                 </div>
               </div>
-              <Button className="bg-accent text-xl font-bold text-white">
+              <Button
+                className="bg-accent text-xl font-bold text-white"
+                onClick={handleBuy}
+              >
                 Buy R {data.price.toLocaleString()}
               </Button>
             </>
