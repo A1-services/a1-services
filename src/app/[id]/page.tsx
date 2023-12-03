@@ -5,14 +5,14 @@ import { Button, Image } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useContext } from "react";
 import { cartContext } from "@/context/cart";
+import { addToCart } from "@/util/Cart";
 
 function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<idProduct | "notFound">();
   const [isloading, setLoading] = useState(true);
   const [indexImage, setIndex] = useState(0);
-
-  const { cart, setCart } = useContext(cartContext);
+  const { addToCart } = useContext(cartContext);
 
   useEffect(() => {
     const origin = window.location.origin;
@@ -28,15 +28,13 @@ function ProductPage() {
 
   const handleBuy = () => {
     if (data! && data !== "notFound") {
-      setCart((prev) => [
-        ...prev,
-        {
-          id: data.id,
-          title: data.title,
-          image: data.images[0],
-          price: data.price,
-        },
-      ]);
+      const newProduct = {
+        id: data.id,
+        title: data.title,
+        image: data.images[0],
+        price: data.price,
+      };
+      addToCart(newProduct)
     }
   };
 
@@ -72,7 +70,10 @@ function ProductPage() {
                   ))}
                 </div>
               </div>
-              <Button className="bg-accent text-xl font-bold text-white" onClick={handleBuy}>
+              <Button
+                className="bg-accent text-xl font-bold text-white"
+                onClick={handleBuy}
+              >
                 Buy R {data.price.toLocaleString()}
               </Button>
             </>

@@ -13,21 +13,22 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/react";
+import Cart from "./Cart";
 
-type Category = { name: string; id: string }
+type Category = { name: string; id: string };
 
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [items, setItems] = useState<Category[]>();
+  // const [items, setItems] = useState<Category[]>();
 
-  useEffect(()=>{
-    const load = async () => {
-      const response = await fetch("/api/category", { cache: "no-store" })
-      const data: {result: Category[]} = await response.json()
-      setItems(data.result)
-    }
-    load()
-  },[])
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const response = await fetch("/api/category", { cache: "no-store" });
+  //     const data: { result: Category[] } = await response.json();
+  //     setItems(data.result);
+  //   };
+  //   load();
+  // }, []);
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-background">
@@ -43,9 +44,9 @@ function NavBar() {
         </NavbarBrand>
       </NavbarContent>
 
-      {items! && (
+      {/* {items! && (
         <NavbarContent className="max-md:hidden" justify="center">
-          {items.slice(0,3).map((i) => (
+          {items.slice(0, 3).map((i) => (
             <NavbarItem key={i.id}>
               <Link
                 className="font-semibold text-primary"
@@ -56,16 +57,22 @@ function NavBar() {
             </NavbarItem>
           ))}
         </NavbarContent>
-      )}
+      )} */}
 
       <NavbarContent justify="end">
+        <div className="max-md:hidden">
+          <Cart />
+        </div>
         <Input
           className="max-w-[200px] rounded outline outline-accent"
           startContent={<HiSearch className="h-[18px] w-[18px] text-accent" />}
         />
       </NavbarContent>
       <NavbarMenu className="bg-background">
-        {items! &&
+        <NavbarMenuItem>
+          <Cart />
+        </NavbarMenuItem>
+        {/* {items! &&
           items.map((i) => (
             <NavbarMenuItem key={i.id}>
               <Link
@@ -75,7 +82,7 @@ function NavBar() {
                 {i.name}
               </Link>
             </NavbarMenuItem>
-          ))}
+          ))} */}
       </NavbarMenu>
     </Navbar>
   );
