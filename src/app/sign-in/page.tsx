@@ -12,7 +12,7 @@ type FormData = {
 
 function SignInPage() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
-  const onSubmit = data => console.log(data);
+  const onSubmit = (data: string) => console.log(data);
 
   console.log(watch("example"));
     return (
@@ -32,7 +32,7 @@ function SignInPage() {
             <label className="text-accent" htmlFor="confirmPassword">Confirm Password</label>
             <input className="outline rounded" type="number" id="confirmPassword" {...register("confirmPassword")}/>
 
-            <Divider className="my-3" className="col-span-2"/>
+            <Divider className="my-3 col-span-2"/>
 
             <Button href="/" color="danger" variant="light" as={Link}>Back</Button>
             <Button type="submit" color="primary">Submit</Button>
