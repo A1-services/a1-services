@@ -58,7 +58,8 @@ class CMS {
       "title": name,
       "images": images[].asset -> url,
       price,
-      "category": category._ref   
+      "category":  category -> {name, "id": _id},
+      quantity
     }
     `)
   }

@@ -1,17 +1,17 @@
 "use client";
 
 import { fetchIdProduct, idProduct } from "@/types";
-import { Button, Image } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useContext } from "react";
 import { cartContext } from "@/context/cart";
-import { addToCart } from "@/util/Cart";
+import ImageSlider from "./components/ImageSlider";
+import { Button } from "@nextui-org/react";
+import { FaCartPlus } from "react-icons/fa";
 
 function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<idProduct | "notFound">();
   const [isloading, setLoading] = useState(true);
-  const [indexImage, setIndex] = useState(0);
   const { addToCart } = useContext(cartContext);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function ProductPage() {
         image: data.images[0],
         price: data.price,
       };
-      addToCart(newProduct)
+      addToCart(newProduct);
     }
   };
 
@@ -46,36 +46,39 @@ function ProductPage() {
           {data === "notFound" && <>Not found</>}
           {data !== "notFound" && (
             <>
-              <h1 className="text-4xl text-accent">{data.title}</h1>
-              <div className="md:flex md:flex-row-reverse md:gap-3">
-                <div className="mx-auto">
-                  <Image
-                    className="h-[400px] sm:h-[500px]"
-                    src={data.images[indexImage]}
-                    alt={data.title}
-                  />
-                </div>
-                <p className="text-text md:hidden">Images</p>
-                <div className="flex gap-3 md:flex-col">
-                  {data.images.map((i, num) => (
-                    <button
-                      className={`w-fit rounded-full p-3 font-bold text-white ${
-                        indexImage === num ? "bg-primary" : "bg-accent"
+              <div className="flex gap-3 max-lg:flex-col max-lg:items-center">
+                <ImageSlider data={data} />
+
+                <div className="w-1/2 max-lg:w-full lg:h-fit lg:px-2 lg:pb-[100px] lg:rounded lg:pt-2 lg:shadow-lg">
+                  {/* Info  */}
+                  <div className="flex w-full flex-col gap-3 rounded p-1 max-lg:shadow-lg">
+                    <h1 className="text-2xl">{data.title}</h1>
+                    <p className="text-3xl font-bold">
+                      R {data.price.toFixed(2)}
+                    </p>
+                  </div>
+
+                  {/* Add Cart */}
+                  <div className="flex w-full justify-center p-3 max-lg:fixed max-lg:bottom-0 max-lg:left-0">
+                    <Button
+                      className={`w-3/4 text-white max-lg:mx-auto ${
+                        data.quantity > 0 ? "bg-accent" : "bg-danger"
                       }`}
-                      key={i}
-                      onClick={() => setIndex(num)}
+                      disabled={data.quantity <= 0}
+                      onClick={(_e) => handleBuy()}
                     >
-                      {num + 1}
-                    </button>
-                  ))}
+                      {data.quantity > 0 ? (
+                        <>
+                          <FaCartPlus size={20} />
+                          <p className="text-xl">Add to cart</p>
+                        </>
+                      ) : (
+                        <p className="text-xl">Out of Stock</p>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <Button
-                className="bg-accent text-xl font-bold text-white"
-                onClick={handleBuy}
-              >
-                Buy R {data.price.toLocaleString()}
-              </Button>
             </>
           )}
         </>

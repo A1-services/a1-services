@@ -7,7 +7,9 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Link,
   Button,
+  Image
 } from "@nextui-org/react";
 import { useContext } from "react";
 import { FaCartShopping } from "react-icons/fa6";
@@ -15,7 +17,7 @@ import { cartContext } from "@/context/cart";
 
 function Cart() {
   const { isOpen, onClose, onOpen, onOpenChange } = useDisclosure();
-  const { cart } = useContext(cartContext);
+  const { cart, removeItemCart } = useContext(cartContext);
 
   return (
     <>
@@ -34,7 +36,11 @@ function Cart() {
                 ) : (
                   <>
                     {cart.map((p) => (
-                      <div key={p.id}>{p.title}</div>
+                      <div className="flex justify-between items-center" key={p.id}>
+                        <Button className="bg-red-600 p-3 rounded text-white" onClick={() => removeItemCart(p.id)}>X</Button>
+                        <p className="text-text">{p.title}</p>
+                        <Image className="w-[100px] h-[100px]" src={p.image} alt="Product"/>
+                      </div>
                     ))}
                   </>
                 )}
@@ -43,7 +49,7 @@ function Cart() {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button href="/cart" color="primary" as={Link} onPress={onClose}>
                   Buy
                 </Button>
               </ModalFooter>
