@@ -3,6 +3,7 @@ export type Product = {
   title: string;
   image: string;
   price: number;
+  quantity: number;
 };
 
 export type fetchProduct = {

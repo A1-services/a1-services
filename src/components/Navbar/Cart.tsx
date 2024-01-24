@@ -1,5 +1,4 @@
 "use client";
-import { CartStorage } from "@/util/Cart";
 import {
   Modal,
   ModalContent,
@@ -9,10 +8,10 @@ import {
   useDisclosure,
   Link,
   Button,
-  Image
+  Image,
 } from "@nextui-org/react";
 import { useContext } from "react";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCartShopping, FaXmark } from "react-icons/fa6";
 import { cartContext } from "@/context/cart";
 
 function Cart() {
@@ -36,10 +35,23 @@ function Cart() {
                 ) : (
                   <>
                     {cart.map((p) => (
-                      <div className="flex justify-between items-center" key={p.id}>
-                        <Button className="bg-red-600 p-3 rounded text-white" onClick={() => removeItemCart(p.id)}>X</Button>
+                      <div
+                        className="flex items-center justify-between"
+                        key={p.id}
+                      >
+                        <Button
+                          className="rounded bg-red-600 p-3 text-white"
+                          onClick={() => removeItemCart(p.id)}
+                          isIconOnly
+                        >
+                          <FaXmark size={24}/>
+                        </Button>
                         <p className="text-text">{p.title}</p>
-                        <Image className="w-[100px] h-[100px]" src={p.image} alt="Product"/>
+                        <Image
+                          className="h-[100px] w-[100px]"
+                          src={p.image}
+                          alt="Product"
+                        />
                       </div>
                     ))}
                   </>
@@ -49,7 +61,12 @@ function Cart() {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button href="/cart" color="primary" as={Link} onPress={onClose}>
+                <Button
+                  href="/cart"
+                  color="primary"
+                  as={Link}
+                  onPress={onClose}
+                >
                   Buy
                 </Button>
               </ModalFooter>

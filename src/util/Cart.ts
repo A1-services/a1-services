@@ -36,3 +36,14 @@ export const removeItemCart = (id: string) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }
 };
+
+export const changeItemQty = (id: string, quantity: number) => {
+  const cartItems = localStorage.getItem("cart");
+  if (cartItems) {
+    const cart = JSON.parse(cartItems) as CartStorage;
+    const cartItemIndex = cart.cartItems.findIndex((value) => value.id === id);
+    if (cartItemIndex !== -1) cart.cartItems[cartItemIndex].quantity = quantity
+    // cart.cartItems = cartStuff
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+};
