@@ -14,6 +14,7 @@ import {
   NavbarMenuToggle,
 } from "@nextui-org/react";
 import Cart from "./Cart";
+import Customer from "./Customer";
 
 type Category = { name: string; id: string };
 
@@ -44,33 +45,24 @@ function NavBar() {
         </NavbarBrand>
       </NavbarContent>
 
-      {/* {items! && (
-        <NavbarContent className="max-md:hidden" justify="center">
-          {items.slice(0, 3).map((i) => (
-            <NavbarItem key={i.id}>
-              <Link
-                className="font-semibold text-primary"
-                href={"/category/" + i.id}
-              >
-                {i.name}
-              </Link>
-            </NavbarItem>
-          ))}
-        </NavbarContent>
-      )} */}
-
       <NavbarContent justify="end">
-        <div className="max-md:hidden">
-          <Cart />
-        </div>
         <Input
           className="max-w-[200px] rounded outline outline-accent"
           startContent={<HiSearch className="h-[18px] w-[18px] text-accent" />}
         />
+        <div className="max-md:hidden">
+          <Cart />
+        </div>
+        <div className="max-md:hidden">
+          <Customer />
+        </div>
       </NavbarContent>
       <NavbarMenu className="bg-background">
-        <NavbarMenuItem>
-          <Cart />
+        <NavbarMenuItem className="items-center">
+          <Cart /> Cart
+        </NavbarMenuItem>
+        <NavbarMenuItem className="items-center">
+          <Customer /> Account
         </NavbarMenuItem>
         {/* {items! &&
           items.map((i) => (
