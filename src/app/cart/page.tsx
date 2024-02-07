@@ -1,19 +1,24 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { cartContext } from "@/context/cart";
-import { Button, Image, Divider } from "@nextui-org/react";
-import { useSession } from "next-auth/react";
-import { Product } from "@/types";
+import { Button, Divider } from "@nextui-org/react";
+import { signIn, useSession } from "next-auth/react";
+import { Order, Product, fetchQuantities } from "@/types";
 import Item from "./components/Item";
-
-export interface Order extends Product {
-  quantity: number;
-}
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import CMS from "@/util/Content";
+import CartLoading from "./loading";
 
 function CartPage() {
-  const { cart, removeItemCart, changeItemQty } = useContext(cartContext);
+  const { cart, removeItemCart, changeItemQty, changeItemsAvaliable } =
+    useContext(cartContext);
   const [price, setPrice] = useState(0);
-  const { data: session, status } = useSession();
+  const [isLoading, setLoading] = useState(false);
+  const [dataNotLoaded, setDataNotLoaded] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
+  const { data, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -23,34 +28,98 @@ function CartPage() {
         0,
       );
       setPrice(newPrice);
+
+      if (dataNotLoaded) {
+        const load = async () => {
+          const ids = cart.map((item) => item.id);
+          const response = await fetch("/api/product/quantity", {
+            method: "PUT",
+            body: JSON.stringify(ids),
+          });
+          const data: fetchQuantities[] = await response.json();
+          changeItemsAvaliable(data);
+          setDataNotLoaded(false);
+          setPageLoading(false);
+        };
+        load();
+      }
     }
-  }, [cart]);
+  }, [cart, changeItemsAvaliable, dataNotLoaded]);
+
+  const handleBuy = () => {
+    if (status === "authenticated") {
+      const loading = async () => {
+        const phoneNumbers = data.user?.email as string;
+        const order: Order = {
+          cart,
+          phoneNumbers,
+          price,
+        };
+
+        const response = await fetch("/api/order", {
+          method: "POST",
+          body: JSON.stringify(order),
+        });
+
+        if (response.ok) {
+          toast.success("Order has been made");
+          router.push("/");
+        } else {
+          toast.error("Something went wrong");
+        }
+
+        setLoading(false);
+      };
+      setLoading(true);
+      loading();
+    } else {
+      signIn("credentials");
+    }
+  };
 
   return (
     <>
       <h1 className="text-3xl font-semibold text-primary">Cart</h1>
-      <Divider className="my-4"/>
-      {cart.length <= 0 && <>No items in cart</>}
-      {cart.length > 0 && (
+      <Divider className="my-4" />
+      {pageLoading ? (
+        <CartLoading />
+      ) : (
         <>
-          <div className="flex flex-col gap-3">
-            {cart.map((item) => (
-              <Item
-                key={item.id}
-                order={item}
-                removeItemCart={() => removeItemCart(item.id)}
-                changeQty={(qty) => changeItemQty(item.id, qty)}
-              />
-            ))}
-          </div>
-          <Divider className="my-4"/>
-          <div className="flex flex-col items-end gap-3">
-            <p className="text-xl text-primary font-semibold">Price: R {price.toFixed(2)}</p>
-            <div className="flex gap-3">
-              <Button color="danger" variant="ghost">Cancel</Button>
-              <Button color="success" variant="shadow">Buy</Button>
-            </div>
-          </div>
+          {cart.length <= 0 && <>No items in cart</>}
+          {cart.length > 0 && (
+            <>
+              <div className="flex flex-col gap-3">
+                {cart.map((item) => (
+                  <Item
+                    key={item.id}
+                    order={item}
+                    removeItemCart={() => removeItemCart(item.id)}
+                    changeQty={(qty) => changeItemQty(item.id, qty)}
+                  />
+                ))}
+              </div>
+              <Divider className="my-4" />
+              <div className="flex flex-col items-end gap-3">
+                <p className="text-xl font-semibold text-primary">
+                  Price: R {price.toFixed(2)}
+                </p>
+                <div className="flex gap-3">
+                  <Button color="danger" variant="ghost">
+                    Cancel
+                  </Button>
+                  <Button
+                    color="success"
+                    variant="shadow"
+                    isLoading={isLoading}
+                    isDisabled={isLoading}
+                    onClick={(e) => handleBuy()}
+                  >
+                    Buy
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </>
       )}
     </>

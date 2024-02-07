@@ -4,6 +4,7 @@ export type Product = {
   image: string;
   price: number;
   quantity: number;
+  avaliableQty?: number;
 };
 
 export type fetchProduct = {
@@ -22,3 +23,11 @@ export type idProduct = {
   quantity: number;
 };
 export type fetchIdProduct = { result: idProduct[] };
+
+export type Order = {
+  cart: Product[];
+  phoneNumbers: string;
+  price: number;
+};
+
+export type fetchQuantities = { id: string; quantity: number };

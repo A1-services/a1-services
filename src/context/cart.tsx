@@ -12,6 +12,8 @@ import {
   addToCart as add,
   removeItemCart as remove,
   changeItemQty as change,
+  changeItemsAvaliable as changeAvaliable,
+  removeAllItems as removeAll
 } from "@/util/Cart";
 import toast from "react-hot-toast";
 
@@ -20,6 +22,13 @@ const setCart: Dispatch<SetStateAction<Product[]>> = () => {};
 const addToCart = (product: Product) => {};
 const removeItemCart = (id: string) => {};
 const changeItemQty = (id: string, quantity: number) => {};
+const removeAllItems = () => {}
+const changeItemsAvaliable = (
+  changes: {
+    id: string;
+    quantity: number;
+  }[],
+) => {};
 
 const initial = {
   cart,
@@ -27,6 +36,8 @@ const initial = {
   addToCart,
   removeItemCart,
   changeItemQty,
+  changeItemsAvaliable,
+  removeAllItems
 };
 
 export const cartContext = createContext(initial);
@@ -38,10 +49,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const cartStorage = getCart();
     const loadedCart = cartStorage !== "No Items" ? cartStorage.cartItems : [];
     setCart(loadedCart);
-  }
+  };
 
   useEffect(() => {
-    refreshCart()
+    refreshCart();
   }, []);
 
   const addToCart = (product: Product) => {
@@ -53,26 +64,40 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     add(product);
-    refreshCart()
+    refreshCart();
 
     toast.success("Added to Cart");
   };
 
   const removeItemCart = (id: string) => {
     remove(id);
-    refreshCart()
+    refreshCart();
     toast.success("Item was removed");
   };
 
   const changeItemQty = (id: string, quantity: number) => {
-    const itemIndex = cart.findIndex((item) => item.id === id);
     change(id, quantity);
+    refreshCart();
+  };
+
+  const changeItemsAvaliable = (
+    changes: {
+      id: string;
+      quantity: number;
+    }[],
+  ) => {
+    changeAvaliable(changes)
     refreshCart()
   };
 
+  const removeAllItems = () => {
+    removeAll()
+    refreshCart()
+  }
+
   return (
     <cartContext.Provider
-      value={{ cart, setCart, addToCart, removeItemCart, changeItemQty }}
+      value={{ cart, setCart, addToCart, removeItemCart, changeItemQty, changeItemsAvaliable, removeAllItems }}
     >
       {children}
     </cartContext.Provider>
