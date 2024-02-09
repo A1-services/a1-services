@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import prisma from "@/util/prisma";
+import supabase from "@/util/supabase";
 
 type Sent = Partial<{
   phoneNumber: string;
   firstName: string;
   lastName: string;
   password: string;
+  email: string;
 }>;
 
 export const POST = async (req: Request) => {
-  const { phoneNumber, firstName, lastName, password }: Sent = await req.json();
+  const { phoneNumber, firstName, lastName, password, email }: Sent =
+    await req.json();
 
   // Check for phone number
   if (phoneNumber === undefined)
@@ -20,29 +23,18 @@ export const POST = async (req: Request) => {
     });
   }
 
-  // Check for password
-  if (password === undefined)
-    return new NextResponse("Password value is missing", { status: 401 });
-  else if (Number.isNaN(+password)) {
-    return new NextResponse("Password is not a number value", {
+  // Check for phone number
+  if (email === undefined)
+    return new NextResponse("Email value is missing", { status: 401 });
+  else {
+    return new NextResponse("Email is not a number value", {
       status: 401,
     });
   }
 
-  // Check for password
-  if (firstName === undefined)
-    return new NextResponse("First name value is missing", { status: 401 });
-  if (lastName === undefined)
-    return new NextResponse("Last Name value is missing", { status: 401 });
+  if (firstName === undefined) {
+    return new NextResponse("First Name value is missing")
+  }
 
-  const user = await prisma.user.create({
-    data: {
-      phoneNumber: +phoneNumber,
-      password,
-      lastName,
-      firstName,
-    },
-  });
-
-  return NextResponse.json(user);
+  // return NextResponse.json(user);
 };
