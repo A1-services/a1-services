@@ -12,7 +12,7 @@ import {
 import toast from "react-hot-toast";
 
 type Form = {
-  phoneNumber: number;
+  email: string;
   firstName: string;
   lastName: string;
   password: string;
@@ -50,7 +50,7 @@ function SignInPage() {
 
   const watchPassword = watch("password");
   const [isLoading, setisLoading] = useState(false);
-
+  
   return (
     <section className="mx-auto max-w-md">
       <h1 className="mx-auto text-4xl font-semibold text-primary underline">
@@ -58,21 +58,23 @@ function SignInPage() {
       </h1>
       <form className="my-5" onSubmit={handleSubmit(onSubmit, onInValid)}>
         <div className="grid grid-cols-1 gap-3">
-          <label htmlFor="phone#">Phonenumbers (+266): </label>
+          <label htmlFor="email">Email: </label>
           <input
             className={`rounded p-3 ${
-              errors.phoneNumber ? "border border-danger" : ""
+              errors.email ? "border border-danger" : ""
             }`}
-            id="phone#"
-            type="number"
-            {...register("phoneNumber", {
-              required: "Fill in Phone numbers",
-              minLength: { value: 8, message: "should have 8 characters" },
-              maxLength: { value: 8, message: "should have 8 characters" },
+            id="email"
+            type="text"
+            {...register("email", {
+              required: "Fill in Email",
+              pattern: {
+                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                message: "Fill in a proper email."
+              }
             })}
           />
-          {errors.phoneNumber !== undefined && (
-            <p className="text-xs text-danger">{errors.phoneNumber.message}</p>
+          {errors.email !== undefined && (
+            <p className="text-xs text-danger">{errors.email.message}</p>
           )}
 
           <label htmlFor="firstname">Firstname: </label>
@@ -101,14 +103,14 @@ function SignInPage() {
 
           <label htmlFor="password">Pin: </label>
           <input
-            type="number"
+            type="password"
             className={`rounded p-3 ${
               errors.password ? "border border-danger" : ""
             }`}
             id="password"
             {...register("password", {
               required: "Fill in Password",
-              maxLength: { value: 4, message: "Pin must be 4 digits" },
+              minLength: { value: 6, message: "Must have more then 6 characters"}
             })}
           />
           {errors.password !== undefined && (
@@ -117,7 +119,7 @@ function SignInPage() {
 
           <label htmlFor="confirmPassword">ConfirmPin: </label>
           <input
-            type="number"
+            type="password"
             className={`rounded p-3 ${
               errors.confirmPassword ? "border border-danger" : ""
             }`}

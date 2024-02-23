@@ -1,9 +1,7 @@
+import { supabaseClient } from "@/util/supabase";
 import { NextResponse } from "next/server";
-import prisma from "@/util/prisma";
-import supabase from "@/util/supabase";
 
 type Sent = Partial<{
-  phoneNumber: string;
   firstName: string;
   lastName: string;
   password: string;
@@ -11,29 +9,37 @@ type Sent = Partial<{
 }>;
 
 export const POST = async (req: Request) => {
-  const { phoneNumber, firstName, lastName, password, email }: Sent =
-    await req.json();
+  try {
+    const { firstName, lastName, password, email }: Sent =
+      await req.json();
 
-  // Check for phone number
-  if (phoneNumber === undefined)
-    return new NextResponse("Phone number value is missing", { status: 401 });
-  else if (Number.isNaN(+phoneNumber)) {
-    return new NextResponse("Phone number is not a number value", {
-      status: 401,
-    });
-  }
+    // Check for phone number
+    if (email === undefined)
+      return new NextResponse("Email value is missing", { status: 401 });
 
-  // Check for phone number
-  if (email === undefined)
-    return new NextResponse("Email value is missing", { status: 401 });
-  else {
-    return new NextResponse("Email is not a number value", {
-      status: 401,
-    });
-  }
+    if (firstName === undefined) {
+      return new NextResponse("First Name value is missing", { status: 401 });
+    }
 
-  if (firstName === undefined) {
-    return new NextResponse("First Name value is missing")
+    if (lastName === undefined) {
+      return new NextResponse("Last Name value is missing", { status: 401 });
+    }
+
+    if (password === undefined) {
+      return new NextResponse("Password value is missing", { status: 401 });
+    }
+
+    const data = await supabaseClient.signUp({
+      email,
+      password
+    })
+
+    if (data !== null) {
+      return NextResponse.json(data);
+    } else throw new Error("There was an error in creating the user");
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 
   // return NextResponse.json(user);
