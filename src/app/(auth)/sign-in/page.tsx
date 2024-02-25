@@ -15,7 +15,7 @@ type Form = {
   phoneNumber: number;
   firstName: string;
   lastName: string;
-  password: string;
+  password: number;
   confirmPassword: string;
 };
 
@@ -37,7 +37,7 @@ function SignInPage() {
 
       if (response.ok) {
         toast.success("Your account has been created");
-        router.push("/login")
+        router.push("/")
       } else {
         toast.error("Something went wrong");
       }
@@ -50,7 +50,7 @@ function SignInPage() {
 
   const watchPassword = watch("password");
   const [isLoading, setisLoading] = useState(false);
-
+  
   return (
     <section className="mx-auto max-w-md">
       <h1 className="mx-auto text-4xl font-semibold text-primary underline">
@@ -58,17 +58,27 @@ function SignInPage() {
       </h1>
       <form className="my-5" onSubmit={handleSubmit(onSubmit, onInValid)}>
         <div className="grid grid-cols-1 gap-3">
-          <label htmlFor="phone#">Phonenumbers (+266): </label>
+          <label htmlFor="phoneNumber">PhoneNumber (+266): </label>
           <input
             className={`rounded p-3 ${
               errors.phoneNumber ? "border border-danger" : ""
             }`}
-            id="phone#"
-            type="number"
+            id="phoneNumber"
+            type="tel"
             {...register("phoneNumber", {
-              required: "Fill in Phone numbers",
-              minLength: { value: 8, message: "should have 8 characters" },
-              maxLength: { value: 8, message: "should have 8 characters" },
+              required: "Fill in phoneNumber",
+              // pattern: {
+              //   value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+              //   message: "Fill in a proper phoneNumber."
+              // }
+              minLength: {
+                value: 8,
+                message: "Numbers from Lesotho should be 8 characters"
+              },
+              maxLength: {
+                value: 8,
+                message: "Numbers from Lesotho should be 8 characters"
+              },
             })}
           />
           {errors.phoneNumber !== undefined && (
@@ -101,14 +111,14 @@ function SignInPage() {
 
           <label htmlFor="password">Pin: </label>
           <input
-            type="number"
+            type="password"
             className={`rounded p-3 ${
               errors.password ? "border border-danger" : ""
             }`}
             id="password"
             {...register("password", {
               required: "Fill in Password",
-              maxLength: { value: 4, message: "Pin must be 4 digits" },
+              minLength: { value: 6, message: "Must have more then 6 characters"}
             })}
           />
           {errors.password !== undefined && (
@@ -117,7 +127,7 @@ function SignInPage() {
 
           <label htmlFor="confirmPassword">ConfirmPin: </label>
           <input
-            type="number"
+            type="password"
             className={`rounded p-3 ${
               errors.confirmPassword ? "border border-danger" : ""
             }`}
@@ -126,7 +136,7 @@ function SignInPage() {
               required: "Fill in Confirm password",
               validate: {
                 equal: (v) =>
-                  v === watchPassword ||
+                  v === watchPassword.toString() ||
                   "The value is not the same as Password",
               },
             })}

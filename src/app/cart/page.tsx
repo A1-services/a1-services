@@ -77,6 +77,25 @@ function CartPage() {
     }
   };
 
+  const handleBuy = () => {
+    if (status === "authenticated") {
+      const user = session.user?.email as string
+      const order = {
+        price,
+        user: +user,
+        products: cart,
+      }
+
+      const fetchoptions = {
+        method: "POST",
+        body: JSON.stringify(order),
+      }
+      const sendOrder  = async () => {
+        const response = await fetch("/api/order", fetchoptions)
+      }
+    }
+  }
+
   return (
     <>
       <h1 className="text-3xl font-semibold text-primary">Cart</h1>
