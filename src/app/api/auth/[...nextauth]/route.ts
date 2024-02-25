@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "@/util/prisma";
-import { supaClient, supabaseClient } from "@/util/supabase";
+import { supabaseClient } from "@/util/supabase";
+import bcrypt from "bcrypt";
 
 const handler = NextAuth({
   providers: [
@@ -13,22 +13,38 @@ const handler = NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        Email: { label: "Email", type: "text" },
+        Email: { label: "PhoneNumber", type: "number" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const email = credentials?.Email;
-        const password = credentials?.password;
+        try {
+          const phoneNumber = credentials?.Email;
+          const password = credentials?.password;
 
-        if (email === undefined || password === undefined) return null;
+          if (phoneNumber === undefined || password === undefined) return null;
 
-        const user = await supabaseClient.signUp({ email, password });
+          const user = await supabaseClient.logIn({ password, phoneNumber });
 
-        if (user === null) return null;
+          if (user === null) return null;
 
-        const person = { id: user.id, name: user.id, email: user.email };
+          const passwordNotValid = !(await bcrypt.compare(
+            password,
+            user.password,
+          ));
 
-        return person;
+          if (passwordNotValid) return null;
+
+          const person = {
+            id: user.id,
+            name: user.lastName,
+            email: user.phoneNumber.toString(),
+          };
+
+          return person;
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
       },
     }),
   ],

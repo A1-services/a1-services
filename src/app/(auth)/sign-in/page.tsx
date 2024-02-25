@@ -12,10 +12,10 @@ import {
 import toast from "react-hot-toast";
 
 type Form = {
-  email: string;
+  phoneNumber: number;
   firstName: string;
   lastName: string;
-  password: string;
+  password: number;
   confirmPassword: string;
 };
 
@@ -37,7 +37,7 @@ function SignInPage() {
 
       if (response.ok) {
         toast.success("Your account has been created");
-        router.push("/login")
+        router.push("/")
       } else {
         toast.error("Something went wrong");
       }
@@ -58,23 +58,31 @@ function SignInPage() {
       </h1>
       <form className="my-5" onSubmit={handleSubmit(onSubmit, onInValid)}>
         <div className="grid grid-cols-1 gap-3">
-          <label htmlFor="email">Email: </label>
+          <label htmlFor="phoneNumber">PhoneNumber (+266): </label>
           <input
             className={`rounded p-3 ${
-              errors.email ? "border border-danger" : ""
+              errors.phoneNumber ? "border border-danger" : ""
             }`}
-            id="email"
-            type="text"
-            {...register("email", {
-              required: "Fill in Email",
-              pattern: {
-                value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                message: "Fill in a proper email."
-              }
+            id="phoneNumber"
+            type="tel"
+            {...register("phoneNumber", {
+              required: "Fill in phoneNumber",
+              // pattern: {
+              //   value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+              //   message: "Fill in a proper phoneNumber."
+              // }
+              minLength: {
+                value: 8,
+                message: "Numbers from Lesotho should be 8 characters"
+              },
+              maxLength: {
+                value: 8,
+                message: "Numbers from Lesotho should be 8 characters"
+              },
             })}
           />
-          {errors.email !== undefined && (
-            <p className="text-xs text-danger">{errors.email.message}</p>
+          {errors.phoneNumber !== undefined && (
+            <p className="text-xs text-danger">{errors.phoneNumber.message}</p>
           )}
 
           <label htmlFor="firstname">Firstname: </label>
@@ -128,7 +136,7 @@ function SignInPage() {
               required: "Fill in Confirm password",
               validate: {
                 equal: (v) =>
-                  v === watchPassword ||
+                  v === watchPassword.toString() ||
                   "The value is not the same as Password",
               },
             })}

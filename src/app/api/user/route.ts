@@ -4,18 +4,18 @@ import { NextResponse } from "next/server";
 type Sent = Partial<{
   firstName: string;
   lastName: string;
-  password: string;
-  email: string;
+  password: number;
+  phoneNumber: number;
 }>;
 
 export const POST = async (req: Request) => {
   try {
-    const { firstName, lastName, password, email }: Sent =
+    const { firstName, lastName, password, phoneNumber }: Sent =
       await req.json();
 
     // Check for phone number
-    if (email === undefined)
-      return new NextResponse("Email value is missing", { status: 401 });
+    if (phoneNumber === undefined)
+      return new NextResponse("phoneNumber value is missing", { status: 401 });
 
     if (firstName === undefined) {
       return new NextResponse("First Name value is missing", { status: 401 });
@@ -29,13 +29,22 @@ export const POST = async (req: Request) => {
       return new NextResponse("Password value is missing", { status: 401 });
     }
 
+    console.log({
+      phoneNumber,
+      password,
+      lastName,
+      firstName
+    })
+
     const data = await supabaseClient.signUp({
-      email,
-      password
+      phoneNumber,
+      password,
+      lastName,
+      firstName
     })
 
     if (data !== null) {
-      return NextResponse.json(data);
+      return new NextResponse("successfull");
     } else throw new Error("There was an error in creating the user");
   } catch (error) {
     console.log(error);

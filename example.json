@@ -1,45 +1,10 @@
-{
-    "access_token": "eyJhbGciOiJIUzI1NiIsImtpZCI6IjE3UG1tRUNSZnRxY0MrQVIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzA4NzEwNzEyLCJpYXQiOjE3MDg3MDcxMTIsImlzcyI6Imh0dHBzOi8vZGtxdWdvamtldWR2Y3Z2a3F1c3Uuc3VwYWJhc2UuY28vYXV0aC92MSIsInN1YiI6ImUwZTUyMzY0LTZjMmItNGU4Yy1hOTM2LWU3NDU3NmM0N2FkOSIsImVtYWlsIjoicGhvbW9sb250b2tvYW5lMzJAZ21haWwuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6e30sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3MDg3MDcxMTJ9XSwic2Vzc2lvbl9pZCI6ImU2MjgzN2QzLTQwYTAtNGVmYy1iYTczLTlkYzM3MmU0MjE2ZCJ9.u4G0xeb9MQvi3gLnMZk2g63Rh6uP9b53IVI-kSq6fgE",
-    "token_type": "bearer",
-    "expires_in": 3600,
-    "expires_at": 1708710712,
-    "refresh_token": "lS0LgsRjh3zztvDm3rfquw",
-    "user": {
-        "id": "e0e52364-6c2b-4e8c-a936-e74576c47ad9",
-        "aud": "authenticated",
-        "role": "authenticated",
-        "email": "phomolontokoane32@gmail.com",
-        "email_confirmed_at": "2024-02-23T16:51:27.111852Z",
-        "phone": "",
-        "confirmation_sent_at": "2024-02-23T16:37:16.304384Z",
-        "confirmed_at": "2024-02-23T16:51:27.111852Z",
-        "last_sign_in_at": "2024-02-23T16:51:52.392331469Z",
-        "app_metadata": {
-            "provider": "email",
-            "providers": [
-                "email"
-            ]
-        },
-        "user_metadata": {},
-        "identities": [
-            {
-                "identity_id": "0e44cbb4-304b-41cb-88b2-24b4f13ba7b0",
-                "id": "e0e52364-6c2b-4e8c-a936-e74576c47ad9",
-                "user_id": "e0e52364-6c2b-4e8c-a936-e74576c47ad9",
-                "identity_data": {
-                    "email": "phomolontokoane32@gmail.com",
-                    "email_verified": false,
-                    "phone_verified": false,
-                    "sub": "e0e52364-6c2b-4e8c-a936-e74576c47ad9"
-                },
-                "provider": "email",
-                "last_sign_in_at": "2024-02-23T16:37:16.300628Z",
-                "created_at": "2024-02-23T16:37:16.300689Z",
-                "updated_at": "2024-02-23T16:37:16.300689Z",
-                "email": "phomolontokoane32@gmail.com"
-            }
-        ],
-        "created_at": "2024-02-23T16:37:16.293285Z",
-        "updated_at": "2024-02-23T16:51:52.394211Z"
+[
+    {
+        "id": "19d3d84f-4cd4-4e9b-84a0-f50a43ccdf0e",
+        "created_at": "2024-02-23T18:41:09.281273+00:00",
+        "firstName": "Phomolo",
+        "lastName": "Ntokoane",
+        "password": 123456,
+        "phoneNumber": 57467325
     }
-}
+]
