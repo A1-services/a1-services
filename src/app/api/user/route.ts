@@ -29,12 +29,12 @@ export const POST = async (req: Request) => {
       return new NextResponse("Password value is missing", { status: 401 });
     }
 
-    console.log({
-      phoneNumber,
-      password,
-      lastName,
-      firstName
-    })
+    // console.log({
+    //   phoneNumber,
+    //   password,
+    //   lastName,
+    //   firstName
+    // })
 
     const data = await supabaseClient.signUp({
       phoneNumber,

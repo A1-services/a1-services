@@ -1,6 +1,6 @@
 import { signInResponse } from "@/types/signin";
-import { loginResponse } from "@/types/login"
-import bcrypt from "bcrypt"
+import { loginResponse } from "@/types/login";
+import bcrypt from "bcrypt";
 import { Product } from "@/types";
 
 class Supabase {
@@ -25,10 +25,10 @@ class Supabase {
   }) {
     try {
       const url = this.url + "/rest/v1/Users";
-      const hashedPassword = await bcrypt.hash(password.toString(), 2)
+      const hashedPassword = await bcrypt.hash(password.toString(), 2);
       const body = `{\"firstName\":\"${firstName}\",\"lastName\":\"${lastName}\",\"phoneNumber\":${phoneNumber},\"password\":"${hashedPassword}"}`;
       const myHeaders = new Headers();
-      console.log("🚀 ~ Supabase ~ body:", body)
+      console.log("🚀 ~ Supabase ~ body:", body);
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("apikey", this.key);
 
@@ -62,7 +62,7 @@ class Supabase {
   }) {
     const url = this.url + `/rest/v1/Users?phoneNumber=eq.${phoneNumber}`;
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    // myHeaders.append("Content-Type", "application/json");
     myHeaders.append("apikey", this.key);
 
     const requestOptions = {
@@ -79,7 +79,33 @@ class Supabase {
     }
   }
 
-  async createOrder(order: {products: Product[], price: number, user: number}) {}
+  async createOrder(order: {
+    products: Product[];
+    price: number;
+    user: number;
+  }) {
+    const url = this.url + `/rest/v1/Order`;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("apikey", this.key);
+
+    const body = JSON.stringify(order)
+
+    const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body
+    };
+
+    const response = await fetch(url, requestOptions);
+    const data: loginResponse[] = await response.json();
+
+    if (response.ok) {
+      return data[0];
+    } else {
+      return null;
+    }
+  }
 }
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
