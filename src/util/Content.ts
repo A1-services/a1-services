@@ -1,3 +1,5 @@
+import { fetchQuantities } from "@/types";
+
 export function urlMaker(query: string) {
   const Cmsurl = process.env.CmsQueryUrl;
   return Cmsurl + encodeURIComponent(query);
@@ -74,6 +76,49 @@ class CMS {
     ]{ "id": _id, quantity }
     `);
   }
+
+  async patchProductsAty(changes: { id: string; num: number }[]) {
+    const id = changes.map((value) => value.id);
+    const url = this.getProductsQty(id);
+    const qtyResponse = await fetch(url);
+    const qtyData: fetchQuantities[] = await qtyResponse.json();
+
+    const mutations = changes.map((value) => {
+      const wantedId = qtyData.find(
+        (data) => value.id === data.id,
+      ) as fetchQuantities;
+      const wantedNumber = wantedId.quantity;
+      return {
+        patch: {
+          id: value.id,
+          set: {
+            quantity: wantedNumber - value.num,
+          },
+        },
+      };
+    });
+
+    const body = JSON.stringify({ mutations });
+    const mutateUrl = process.env.CmsMutateUrl as string;
+    const mutatekey = process.env.SANITY_KEY as string;
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${mutatekey}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const responseOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body
+    }
+
+    const response = await fetch(mutateUrl, responseOptions)
+
+    if (response.ok) {
+      console.log("Change successful")
+    }
+  }
 }
+
+export const cmsClient = new CMS();
 
 export default CMS;

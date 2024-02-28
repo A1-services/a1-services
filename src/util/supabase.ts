@@ -1,7 +1,8 @@
 import { signInResponse } from "@/types/signin";
 import { loginResponse } from "@/types/login";
 import bcrypt from "bcrypt";
-import { Product } from "@/types";
+import { Product, fetchQuantities } from "@/types";
+import { cmsClient } from "./Content";
 
 class Supabase {
   private url: string;
@@ -42,7 +43,6 @@ class Supabase {
       const data: signInResponse = await response.json();
       console.log(data);
 
-      console.log(response.ok);
       if (response.ok) {
         return data;
       } else {
@@ -84,7 +84,7 @@ class Supabase {
     price: number;
     user: number;
   }) {
-    const url = this.url + `/rest/v1/Order`;
+    const url = this.url + `/rest/v1/Orders`;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("apikey", this.key);
@@ -98,10 +98,18 @@ class Supabase {
     };
 
     const response = await fetch(url, requestOptions);
-    const data: loginResponse[] = await response.json();
 
+    
     if (response.ok) {
-      return data[0];
+      const ids = order.products.map((value) => {
+        return {
+          id: value.id,
+          num: value.quantity
+        }
+      })
+      await cmsClient.patchProductsAty(ids)
+      
+      return "successful";
     } else {
       return null;
     }
