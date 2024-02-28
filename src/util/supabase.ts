@@ -55,10 +55,8 @@ class Supabase {
 
   async logIn({
     phoneNumber,
-    password,
   }: {
     phoneNumber: string;
-    password: string;
   }) {
     const url = this.url + `/rest/v1/Users?phoneNumber=eq.${phoneNumber}`;
     const myHeaders = new Headers();
@@ -108,7 +106,7 @@ class Supabase {
         }
       })
       await cmsClient.patchProductsAty(ids)
-      
+
       return "successful";
     } else {
       return null;
