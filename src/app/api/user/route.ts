@@ -1,48 +1,55 @@
+import { supabaseClient } from "@/util/supabase";
 import { NextResponse } from "next/server";
-import prisma from "@/util/prisma";
 
 type Sent = Partial<{
-  phoneNumber: string;
   firstName: string;
   lastName: string;
-  password: string;
+  password: number;
+  phoneNumber: number;
 }>;
 
 export const POST = async (req: Request) => {
-  const { phoneNumber, firstName, lastName, password }: Sent = await req.json();
+  try {
+    const { firstName, lastName, password, phoneNumber }: Sent =
+      await req.json();
 
-  // Check for phone number
-  if (phoneNumber === undefined)
-    return new NextResponse("Phone number value is missing", { status: 401 });
-  else if (Number.isNaN(+phoneNumber)) {
-    return new NextResponse("Phone number is not a number value", {
-      status: 401,
-    });
-  }
+    // Check for phone number
+    if (phoneNumber === undefined)
+      return new NextResponse("phoneNumber value is missing", { status: 401 });
 
-  // Check for password
-  if (password === undefined)
-    return new NextResponse("Password value is missing", { status: 401 });
-  else if (Number.isNaN(+password)) {
-    return new NextResponse("Password is not a number value", {
-      status: 401,
-    });
-  }
+    if (firstName === undefined) {
+      return new NextResponse("First Name value is missing", { status: 401 });
+    }
 
-  // Check for password
-  if (firstName === undefined)
-    return new NextResponse("First name value is missing", { status: 401 });
-  if (lastName === undefined)
-    return new NextResponse("Last Name value is missing", { status: 401 });
+    if (lastName === undefined) {
+      return new NextResponse("Last Name value is missing", { status: 401 });
+    }
 
-  const user = await prisma.user.create({
-    data: {
-      phoneNumber: +phoneNumber,
+    if (password === undefined) {
+      return new NextResponse("Password value is missing", { status: 401 });
+    }
+
+    // console.log({
+    //   phoneNumber,
+    //   password,
+    //   lastName,
+    //   firstName
+    // })
+
+    const data = await supabaseClient.signUp({
+      phoneNumber,
       password,
       lastName,
-      firstName,
-    },
-  });
+      firstName
+    })
 
-  return NextResponse.json(user);
+    if (data !== null) {
+      return new NextResponse("successfull");
+    } else throw new Error("There was an error in creating the user");
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Something went wrong", { status: 500 });
+  }
+
+  // return NextResponse.json(user);
 };

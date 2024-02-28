@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchIdProduct, idProduct } from "@/types";
+import { Product, fetchIdProduct, idProduct } from "@/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useContext } from "react";
 import { cartContext } from "@/context/cart";
@@ -28,11 +28,12 @@ function ProductPage() {
 
   const handleBuy = () => {
     if (data! && data !== "notFound") {
-      const newProduct = {
+      const newProduct: Product = {
         id: data.id,
         title: data.title,
         image: data.images[0],
         price: data.price,
+        quantity: 1
       };
       addToCart(newProduct);
     }

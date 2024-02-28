@@ -20,7 +20,6 @@
 
   body {
     background-color: var(--background);
-    /* background-image: url("./assets/image1.jpg"); */
     color: var(--text);
     min-height: 100vh;
   }
