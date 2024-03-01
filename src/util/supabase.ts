@@ -105,7 +105,7 @@ class Supabase {
           num: value.quantity
         }
       })
-      await cmsClient.patchProductsAty(ids)
+      // await cmsClient.patchProductsAty(ids)
 
       return "successful";
     } else {
