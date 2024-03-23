@@ -15,11 +15,14 @@ import {
 } from "@nextui-org/react";
 import Cart from "./Cart";
 import Customer from "./Customer";
+import { useRouter } from "next/navigation";
 
 type Category = { name: string; id: string };
 
 function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [search, setSearch] = useState("")
+  const router  = useRouter()
   // const [items, setItems] = useState<Category[]>();
 
   // useEffect(() => {
@@ -30,6 +33,10 @@ function NavBar() {
   //   };
   //   load();
   // }, []);
+
+  const handleClick = (event: string) => {
+
+  }
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-background">
@@ -49,6 +56,14 @@ function NavBar() {
         <Input
           className="max-w-[200px] rounded outline outline-accent"
           startContent={<HiSearch className="h-[18px] w-[18px] text-accent" />}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") router.push(`/search?query=${search}`)
+          }}
+          value={search}
+          onChange={(event) => {
+            const value = event.currentTarget.value
+            setSearch(value)
+          }}
         />
         <div className="max-md:hidden">
           <Cart />

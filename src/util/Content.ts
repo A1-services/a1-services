@@ -29,6 +29,17 @@ class CMS {
       price
     }`);
   }
+  
+  searchProductsUrl(query: string) {
+    return urlMaker(`
+    *[ _type == "product" && name match "${query}*" ]
+    {
+      "id": _id,
+      "title": name,
+      "image": images[0].asset -> url,
+      price
+    }`);
+  }
 
   searchProductUrl(value: string) {
     return urlMaker(`
