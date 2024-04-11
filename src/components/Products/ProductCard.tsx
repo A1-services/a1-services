@@ -10,7 +10,7 @@ const ProductCard = ({ item: { id, title, price, image } }: Props) => {
   return (
     <Card>
       <CardBody className="flex flex-col">
-        <Image src={image} alt={title} className="h-full"/>
+        <Image src={image} alt={title} className="h-[250px] w-full"/>
       </CardBody>
       <CardFooter className="flex-col">
         <div className="flex w-full justify-between">
