@@ -101,10 +101,12 @@ class Supabase {
         .eq("id", +id)
         .select();
 
-      if (error) console.log(error)
+
+  if (error) console.log(error)
     }
     for (let p of products) {
       await handle(p)
+
     }
 
     return "successful";
