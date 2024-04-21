@@ -19,7 +19,7 @@ export type idProduct = {
   title: string;
   images: string[];
   price: number;
-  category: { name: string; id: string };
+  // category: { name: string; id: string };
   quantity: number;
 };
 export type fetchIdProduct = { result: idProduct[] };

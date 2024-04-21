@@ -1,8 +1,9 @@
 import { signInResponse } from "@/types/signin";
 import { loginResponse } from "@/types/login";
 import bcrypt from "bcrypt";
-import { Product, fetchQuantities } from "@/types";
+import { Product, fetchQuantities, idProduct } from "@/types";
 import { cmsClient } from "./Content";
+import { createClient } from "./supabase/server";
 
 class Supabase {
   private url: string;
@@ -53,11 +54,7 @@ class Supabase {
     }
   }
 
-  async logIn({
-    phoneNumber,
-  }: {
-    phoneNumber: string;
-  }) {
+  async logIn({ phoneNumber }: { phoneNumber: string }) {
     const url = this.url + `/rest/v1/Users?phoneNumber=eq.${phoneNumber}`;
     const myHeaders = new Headers();
     // myHeaders.append("Content-Type", "application/json");
@@ -81,41 +78,95 @@ class Supabase {
     products: Product[];
     price: number;
     user: number;
-  }) {
-    const url = this.url + `/rest/v1/Orders`;
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("apikey", this.key);
+  }): Promise<"successful" | null> {
+    const { user, price, products } = order;
+    const supabase = createClient();
 
-    const body = JSON.stringify(order)
+    // Create order
+    const { data, error } = await supabase
+      .from("Orders")
+      .insert([{ price, products, user }])
+      .select();
 
-    const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body
-    };
-
-    const response = await fetch(url, requestOptions);
-
-    
-    if (response.ok) {
-      const ids = order.products.map((value) => {
-        return {
-          id: value.id,
-          num: value.quantity
-        }
-      })
-      await cmsClient.patchProductsAty(ids)
-
-      return "successful";
-    } else {
+    if (error) {
+      console.log(error);
       return null;
     }
+
+    const handle = async ({ id, avaliableQty, quantity }: Product) => {
+      const avQty = avaliableQty as number
+      const { data, error } = await supabase
+        .from("Products")
+        .update({ qty: avQty - quantity })
+        .eq("id", +id)
+        .select();
+
+      if (error) console.log(error)
+    }
+    for (let p of products) {
+      await handle(p)
+    }
+
+    return "successful";
+  }
+
+  async getProduct() {
+    const url = this.url;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
   }
 }
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+/**
+ * Takes the info from supabase and makes it into the way the system understands
+ * @param Product
+ * @returns
+ */
+export function CMSSupaProduct(
+  Product: {
+    created_at: string;
+    id: number;
+    img: string[];
+    name: string;
+    price: number;
+    qty: number;
+  }[],
+): Product[] {
+  return Product.map(({ id, price, qty, img, name }) => ({
+    id: id.toString(),
+    image: img[0],
+    price,
+    title: name,
+    quantity: qty,
+  }));
+}
+
+/**
+ * Takes the info from supabase and makes it into the way the system understands
+ * @param idProduct
+ * @returns
+ */
+export function CMSSupaIdProduct(
+  Product: {
+    created_at: string;
+    id: number;
+    img: string[];
+    name: string;
+    price: number;
+    qty: number;
+  }[],
+): idProduct[] {
+  return Product.map(({ id, price, qty, img, name }) => ({
+    id: id.toString(),
+    images: img,
+    price,
+    title: name,
+    quantity: qty,
+  }));
+}
 
 export const supabaseClient = new Supabase(url, key);
 

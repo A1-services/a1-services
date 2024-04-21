@@ -1,21 +1,35 @@
 import { fetchProduct } from "@/types";
-import CMS from "@/util/Content";
+import { CMSSupaProduct } from "@/util/supabase";
+import { createClient } from "@/util/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
   try {
     const url = req.nextUrl;
     let productUrl = "";
+    const supabase = createClient();
     const query = url.searchParams.get("query");
 
-    if (query !== null) {
-      productUrl = new CMS().searchProductsUrl(query);
-    } else {
-      productUrl = new CMS().productsUrl();
-    }
+    const method = async (query: string | null) => {
+      if (query && query.trim() !== "") {
+        let search = await supabase
+          .from("Products")
+          .select("*")
+          .textSearch("name", query.trim());
+        return search;
+      } else {
+        let search = await supabase.from("Products").select("*");
+        return search
+      }
+    };
 
-    const response = await fetch(productUrl, { cache: "no-store" });
-    const data: fetchProduct = await response.json();
+    let { data: Product, error } = await method(query);
+    console.log("🚀 ~ GET ~ Product:", Product);
+    if (error) console.log(error);
+
+    const info = CMSSupaProduct(Product ?? []);
+
+    const data: fetchProduct = { result: info };
     return NextResponse.json(data);
   } catch (error) {
     return new NextResponse("Something wrong happend.", { status: 500 });

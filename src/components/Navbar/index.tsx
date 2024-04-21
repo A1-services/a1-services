@@ -53,7 +53,7 @@ function NavBar() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <Input
+        {/* <Input
           className="max-w-[200px] rounded outline outline-accent"
           startContent={<HiSearch className="h-[18px] w-[18px] text-accent" />}
           onKeyDown={(event) => {
@@ -64,7 +64,7 @@ function NavBar() {
             const value = event.currentTarget.value
             setSearch(value)
           }}
-        />
+        /> */}
         <div className="max-md:hidden">
           <Cart />
         </div>
