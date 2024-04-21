@@ -7,12 +7,16 @@ import { Order, Product, fetchQuantities } from "@/types";
 import Item from "./components/Item";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import CMS from "@/util/Content";
 import CartLoading from "./loading";
 
 function CartPage() {
-  const { cart, removeItemCart, changeItemQty, changeItemsAvaliable } =
-    useContext(cartContext);
+  const {
+    cart,
+    removeItemCart,
+    changeItemQty,
+    changeItemsAvaliable,
+    removeAllItems,
+  } = useContext(cartContext);
   const [price, setPrice] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const [dataNotLoaded, setDataNotLoaded] = useState(true);
@@ -63,6 +67,7 @@ function CartPage() {
 
         if (response.ok) {
           toast.success("Order has been made");
+          removeAllItems()
           router.push("/");
         } else {
           toast.error("Something went wrong");

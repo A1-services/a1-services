@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Product, fetchProduct } from "@/types";
@@ -34,7 +34,13 @@ function SearchPage() {
     <>
       {!isError ? (
         <>
-          <ProductGrid items={products} />
+          {!notAvaliable ? (
+            <>
+              <ProductGrid items={products} />
+            </>
+          ) : (
+            <>No products</>
+          )}
         </>
       ) : (
         <>Something went wrong</>

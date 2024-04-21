@@ -12,8 +12,6 @@ export type Product = {
 
 async function getProducts() {
   const domian = window.location.origin
-  // const bestUrl = new CMS().bestProductsUrl()
-  // const productUrl = new CMS().productsUrl()
   const bestResponse = await fetch(domian + "/api/best", { next: { revalidate: 60 } });
   const productResponse = await fetch(domian + "/api/product", { cache: "no-store" });
 

@@ -1,10 +1,19 @@
 import { fetchProduct } from "@/types";
-import CMS from "@/util/Content";
+import { CMSSupaProduct } from "@/util/supabase";
+import { createClient } from "@/util/supabase/server";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
-  const bestUrl = new CMS().bestProductsUrl();
-  const response = await fetch(bestUrl, { next: { revalidate: 60 } });
-  const data: fetchProduct = await response.json();
+  const supabase = createClient();
+
+  let { data: Best, error } = await supabase.from("Best").select("*, Products(*)");
+
+  const load = Best || []
+  let Products = (Best ?? []).map((b) => b.Products).filter((p) => p)
+
+  //@ts-ignore
+  const info = CMSSupaProduct(Products)
+
+  const data: fetchProduct = {result: info}
   return NextResponse.json(data);
 };
